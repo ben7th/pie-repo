@@ -2,6 +2,7 @@ class DiscussionLogParse
 
   attr_reader :repo
   def initialize(workspace)
+    @workspace = workspace
     @repo = GitRepository.find(workspace.user_id,workspace.id).repo
   end
 
@@ -20,7 +21,7 @@ class DiscussionLogParse
     emails_str = emails.map{|email| "<#{email}>"}*"\|"
     options = emails.blank? ? {} : {:author=>"#{emails_str}"}
     @repo.log("master",path,options).map do |commit|
-      DiscussionLogInfo.build_from_commit(commit)
+      DiscussionLogInfo.build_from_commit(commit,@workspace)
     end
   end
 

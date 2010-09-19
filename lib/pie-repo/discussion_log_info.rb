@@ -1,6 +1,6 @@
 class DiscussionLogInfo < MplistRecord
 
-  attr_reader :operate,:discussion_id,:text_pin_id,:email,:date,:id
+  attr_reader :operate,:discussion_id,:text_pin_id,:email,:date,:id,:workspace
   def initialize(options)
     @operate = options[:operate]
     @discussion_id = options[:discussion_id]
@@ -8,6 +8,7 @@ class DiscussionLogInfo < MplistRecord
     @email = options[:email]
     @date = options[:date]
     @id = @date.to_i
+    @workspace = options[:workspace]
   end
 
   OPERATE_CREATE = 'create'
@@ -15,7 +16,7 @@ class DiscussionLogInfo < MplistRecord
   OPERATE_REPLY = 'reply'
   OPERATE_EDIT = 'edit'
   
-  def self.build_from_commit(commit)
+  def self.build_from_commit(commit,workspace)
     files = commit.stats.files
     files_hash = files_hash(files)
     operate = case true
@@ -26,8 +27,7 @@ class DiscussionLogInfo < MplistRecord
     end
     text_pin_id = files_hash[:text].blank? ? nil : files_hash[:text][:id]
     self.new(:operate=>operate,:discussion_id=>files_hash[:document_tree][:id],
-      :text_pin_id=>text_pin_id,:email=>commit.author.email,:date=>commit.date)
-    
+      :text_pin_id=>text_pin_id,:email=>commit.author.email,:date=>commit.date,:workspace=>workspace)
   end
 
   # 解析下面这个数组成为比较容易操作的hash
