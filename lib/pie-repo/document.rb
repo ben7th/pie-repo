@@ -157,14 +157,14 @@ class Document < MplistRecord
   #   :text_pin=>text_pin,:children=>[:text_pin=>text_pin,:children=>[]]
   #   ]
   # }
-  def text_pin_tree(observer=nil)
-    {:root=>_text_pin_arr(@nokogiri_struct.at_css("document"),observer)}
+  def text_pin_tree(observer_email=nil)
+    {:root=>_text_pin_arr(@nokogiri_struct.at_css("document"),observer_email)}
   end
 
-  def visable?(tn,observer)
+  def visable?(tn,observer_email)
     sign = not_hide?(tn)
-    if observer
-      return sign && self.visible_config.tu_visible_for?(tn['id'],observer)
+    if observer_email
+      return sign && self.visible_config.tu_visible_for?(tn['id'],observer_email)
     end
     sign
   end

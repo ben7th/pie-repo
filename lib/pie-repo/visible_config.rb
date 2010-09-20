@@ -43,8 +43,8 @@ class VisibleConfig
   end
 
   # 检查某个人对某个text_pin的可见状态
-  def tu_visible_for?(text_pin_id,observer)
-    !(texts_visibles[text_pin_id] && texts_visibles[text_pin_id].include?(observer))
+  def tu_visible_for?(text_pin_id,observer_email)
+    !(texts_visibles[text_pin_id] && texts_visibles[text_pin_id].include?(observer_email))
   end
 
   # 人 屏蔽 人 的所有规则

@@ -14,7 +14,7 @@ class GitRepository
   def destroy
     return false if !File.exist?(path)
     recycle_path = GitRepository.user_recycle_path(@user.id)
-    run_cmd "mv #{path} #{recycle_path}/#{@name}_#{randstr}"
+    `mv #{path} #{recycle_path}/#{@name}_#{randstr}`
     return true
   end
 
@@ -173,7 +173,7 @@ class GitRepository
 
   # 重命名repo
   def rename(new_name)
-    run_cmd "mv #{path} #{GitRepository.user_repository_path(@user.id)}/#{new_name}"
+    `mv #{path} #{GitRepository.user_repository_path(@user.id)}/#{new_name}`
   end
 
   include GitRepositoryMethods
