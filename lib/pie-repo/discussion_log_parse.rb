@@ -13,7 +13,7 @@ class DiscussionLogParse
   end
 
   # 这里查看的是讨论中某一个话题的提交记录
-  def discussion_log_infos(emails,discussion_id)
+  def discussion_log_infos(discussion_id,emails=[])
     logs(emails, "document_tree/#{discussion_id}")
   end
 
