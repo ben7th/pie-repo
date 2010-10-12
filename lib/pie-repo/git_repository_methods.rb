@@ -1,6 +1,10 @@
 module GitRepositoryMethods
-  GIT_REPO_PATH = YAML.load(CoreService.project("pin-workspace").settings)[:git_repo_path]
-
+  if RAILS_ENV != "test"
+    GIT_REPO_PATH = YAML.load(CoreService.project("pin-workspace").settings)[:git_repo_path]
+  else
+    GIT_REPO_PATH = "/root/mindpin_base/git_repo_test"
+  end
+  
   attr_reader :user,:name,:repo
 
   def self.included(base)
