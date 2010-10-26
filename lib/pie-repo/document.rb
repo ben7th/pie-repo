@@ -75,14 +75,28 @@ class Document < MplistRecord
 
     add_joiner_to_struct(email)
     add_text_pin_to_struct(new_pin_id,text_pin_id).to_s
-    document_xml = @nokogiri_struct.to_s
 
+    # 暂时添加，根据宏文件中的规则，进行操作的方法
+    operate_by_macro_rule
+
+    document_xml = @nokogiri_struct.to_s
     params = [
       {:data=>text_xml,:to=>File.join(TextPin::SUB_PATH,new_pin_id)},
       {:data=>document_xml,:to=>File.join(Document::SUB_PATH,self.id)}
     ]
     commit_files_and_create_discussion_and_document_message(params,email,new_pin_id,options[:mmid])
     return find_from_repository.find_text_pin(new_pin_id)
+  end
+
+  # 暂时添加，根据宏文件中的规则，进行操作的方法
+  def operate_by_macro_rule
+    data_source = DataSource.create_discussion_data_source(self.discussion)
+    rules = Macro.find_rules_of(data_source)
+    if rules.include?({"new post"=>"input #datetime"})
+      new_time = Nokogiri::XML::Node.new('new_date',@nokogiri_struct)
+      new_time["new_date"] = "#{Time.now.to_s}"
+      @nokogiri_struct.at_css("document-tree").add_child new_time
+    end
   end
 
   def commit_files_and_create_discussion_and_document_message(params,email,text_pin_id,mmid)
@@ -115,6 +129,13 @@ class Document < MplistRecord
     file_info = GitRepository.find(repo_user_id,repo_name).show_file("master",File.join(SUB_PATH,id))
     Document.build_from_file_info(file_info)
   end
+
+  # 根据log找到document
+  def self.find_by_log_info(log_info)
+    workspace = log_info.workspace
+    self.find(:repo_user_id=>workspace.user_id,:repo_name=>workspace.id,:id=>log_info.discussion_id.to_s)
+  end
+
 
   # 找到一个版本库中的所有讨论
   def self.find_all_in_repo(user_id,repo_name)
