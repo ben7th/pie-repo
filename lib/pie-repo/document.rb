@@ -77,7 +77,7 @@ class Document < MplistRecord
     add_text_pin_to_struct(new_pin_id,text_pin_id).to_s
 
     # 暂时添加，根据宏文件中的规则，进行操作的方法
-    operate_by_macro_rule
+#    operate_by_macro_rule
 
     document_xml = @nokogiri_struct.to_s
     params = [
